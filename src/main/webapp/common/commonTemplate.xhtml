@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="/css/default.css"/>
+        <h:outputStylesheet name="/css/cssLayout.css"/>
+         <h:outputStylesheet name="/css/home.css"/>
+         <h:outputStylesheet name="/css/student.css"/>
+          <h:outputStylesheet name="/css/supplier.css"/>
+         </h:head>
+    <h:body>
+
+        <div id="top">
+            <ui:insert name="top"></ui:insert>
+            <h:graphicImage  
+                url="resources/images/parivaarLogo.png" />
+            <div class="card">
+    <h:form>
+        <p:growl id="messages"/>
+
+        <p:menubar>
+          
+
+            <p:submenu label="Users" icon="pi pi-fw pi-user">
+                <p:menuitem value="New" icon="pi pi-fw pi-user-plus"/>
+                <p:menuitem value="Delete" icon="pi pi-fw pi-user-minus"/>
+                <p:submenu label="Search" icon="pi pi-fw pi-users">
+                    <p:submenu label="Filter" icon="pi pi-fw pi-filter">
+                        <p:menuitem value="Print" icon="pi pi-fw pi-print"/>
+                    </p:submenu>
+                    <p:menuitem value="List" icon="pi pi-fw pi-bars"/>
+                </p:submenu>
+            </p:submenu>
+
+           
+
+            <p:divider layout="vertical"/>
+
+            <p:menuitem value="Students" action="#{studentController.studentHomeDestination()}" icon="pi pi-fw pi-users" />
+            <p:submenu label="Stock Management" icon="pi pi-fw pi-calendar">
+               
+                    <p:menuitem value="Supplier" action="#{supplierController.supplierHomeDestination()}" icon="pi pi-fw pi-power-off" />
+                    <p:menuitem value="Items" action="#{itemController.itemHomeDestination()}" icon="pi pi-fw pi-power-off" />
+                    <p:menuitem value="Transaction" action="#{transactionController.transactionHomeDestination()}" icon="pi pi-fw pi-power-off" />
+               
+            </p:submenu>
+           
+
+            <f:facet name="options">
+                <div class="ui-input-icon-left mr-2">
+                    <style>
+    button.ui-button {
+        margin-right: .5rem;
+    }
+</style>
+                    <i class="pi pi-fw pi-search" />
+                    <p:inputText placeholder="Search"/>
+               
+                    <p:commandButton value="Logout" icon="pi pi-fw pi-sign-out" action="#{loginBean.logout()}"  styleClass="ui-button-info"/>
+                 <p:commandButton value="Change Passowrd" icon="pi pi-fw pi-undo" action="#{loginBean.changePasswordDial()}"  styleClass="ui-button-info"/>
+                  </div>
+                  
+            </f:facet>
+            
+        </p:menubar>
+    </h:form>
+</div>
+        </div>
+        <div>
+            <div id="left">
+                <ui:insert name="left"></ui:insert>
+            </div>
+            <div id="content" class="left_content">
+                <ui:insert name="content"></ui:insert>
+            </div>
+        </div>
+        <div id="bottom">
+            <ui:insert name="bottom"></ui:insert>
+        </div>
+        
+<!--          <p:dialog header="Change Password" widgetVar="changePassDialog" minHeight="40" width="350" showEffect="fade" modal="true">
+   <div class="card">
+    <h:form>
+        <h5 class="mt-0">Please enter new password.</h5>
+        <div class="field grid">
+            <p:outputLabel for="pwd1" styleClass="col-fixed" style="width:100px" value="Password"/>
+            <div class="col">
+                <p:password id="pwd1" value="#{loginBean.password}" match="pwd2" label="Password 1" feedback="true" inline="true" required="true"/>
+            </div>
+        </div>
+
+        <div class="field grid">
+            <p:outputLabel for="pwd2" styleClass="col-fixed" style="width:100px" value="Password"/>
+            <div class="col">
+                <p:password id="pwd2" value="#{loginBean.password}" label="Password 2" redisplay="true" required="true"/>
+            </div>
+        </div>
+
+        <p:commandButton update="@form" value="Save" action="#{loginBean.changePass()}" />
+
+        <p:messages id="messages" showDetail="true"  >
+            <p:autoUpdate/>
+        </p:messages>
+    </h:form>
+</div>
+</p:dialog>-->
+
+    </h:body>
+
+</html>

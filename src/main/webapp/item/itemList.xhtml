@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+
+        <title>Item Management</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="/common/commonTemplate.xhtml">
+
+
+
+            <ui:define name="content">
+
+                <div class="crud-datatable">
+                    <h:form id="form">
+                        <p:growl id="messages" showDetail="true" />
+
+                        <p:toolbar>
+                            <p:toolbarGroup>
+                                <p:commandButton value="New" icon="pi pi-plus" actionListener="#{itemController.openNew()}"
+                                                 update=":dialogs:manage-product-content"
+                                                 styleClass="ui-button-success" style="margin-right: .5rem">
+                                    <!--<p:resetInput target=":dialogs:manage-product-content" />-->
+                                </p:commandButton>
+                                <p:commandButton id="delete-products-button" value="#{itemController.deleteButtonMessage}"
+                                                 icon="pi pi-trash" actionListener="#{itemController.deleteSelectedItems()}"
+                                                 styleClass="ui-button-danger" disabled="#{!itemController.hasSelectedItems()}" update="@this">
+                                    <p:confirm header="Confirmation" message="Delete the selected products?"
+                                               icon="pi pi-exclamation-triangle" />
+                                </p:commandButton>
+                            </p:toolbarGroup>
+
+                        </p:toolbar>
+
+                        <p:dataTable id="dt-products" widgetVar="dtProducts" var="itm" value="#{itemController.allItems}"
+                                     reflow="true" styleClass="products-table" selection="#{itemController.selectedItems}"
+                                     rowKey="#{itm.id}" paginator="true" rows="5" rowSelectMode="add" paginatorPosition="bottom">
+                            <f:facet name="header">
+                                <div class="products-table-header">
+                                    <span style="font-weight: bold">Items</span>
+                                    <span class="filter-container ui-input-icon-left"> <i class="pi pi-search"></i>
+                                        <p:inputText id="globalFilter" onkeyup="PF('dtProducts').filter()" placeholder="Search" />
+                                    </span>
+                                </div>
+                            </f:facet>
+
+                            <p:ajax event="rowSelect" update=":form:delete-products-button" />
+                            <p:ajax event="rowUnselect" update=":form:delete-products-button" />
+                            <p:ajax event="rowSelectCheckbox" update=":form:delete-products-button" />
+                            <p:ajax event="rowUnselectCheckbox" update=":form:delete-products-button" />
+                            <p:ajax event="toggleSelect" update=":form:delete-products-button" />
+
+                            <p:column selectionMode="multiple" exportable="false"></p:column>
+                            
+                             <p:column headerText="Code" sortBy="#{itm.itemCode}" filterBy="#{itm.itemCode}">
+                                <h:outputText value="#{itm.itemCode}" />
+                            </p:column>
+
+                            <p:column headerText="Name" sortBy="#{itm.itemName}" filterBy="#{itm.itemName}">
+                                <h:outputText value="#{itm.itemName}" />
+                            </p:column>
+                           
+                            <p:column headerText="Description1/Remarks1" sortBy="#{itm.descriptionOne}" filterBy="#{itm.descriptionOne}">
+                                <h:outputText value="#{itm.descriptionOne}" />
+                            </p:column>
+                            <p:column headerText="Description2/Remarks2" sortBy="#{itm.descriptionTwo}" filterBy="#{itm.descriptionTwo}">
+                                <h:outputText value="#{itm.descriptionTwo}" />
+                            </p:column>
+                            <p:column headerText="Current Inventory" sortBy="#{itm.currentInventoryQuantity}"
+                                      filterBy="#{itm.currentInventoryQuantity}">
+                                <h:outputText 
+                                    value="#{itm.currentInventoryQuantity}" />
+                            </p:column>
+                            <p:column headerText="Unit" sortBy="#{itm.quantityMeasuredIn}"
+                                      filterBy="#{itm.quantityMeasuredIn}">
+                                <h:outputText 
+                                    value="#{itm.quantityMeasuredIn}" />
+                            </p:column>
+                            
+                            <p:column headerText="Status" sortBy="#{itm.status}"
+                                      filterBy="#{itm.status}">
+                                <h:outputText 
+                                    value="#{itm.status}" converter="statusOutput" />
+                            </p:column>
+                           
+                            <p:column exportable="false">
+                                <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-product-content"
+                                                 oncomplete="PF('manageProductDialog').show()"
+                                                 styleClass="edit-button rounded-button ui-button-success" process="@this" >
+                                    <f:setPropertyActionListener value="#{itm}" target="#{itemController.selectedItem}" />
+                                    <p:resetInput target=":dialogs:manage-product-content" />
+                                </p:commandButton>
+                                <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                                 process="@this"
+                                                 oncomplete="PF('deleteProductDialog').show()">
+                                    <f:setPropertyActionListener value="#{itm}" target="#{itemController.selectedItem}" />
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>
+
+                    <h:form id="dialogs">
+                        <p:dialog id="updateDialog" header="Item Details" showEffect="fade" modal="true" widgetVar="manageProductDialog"
+                                  responsive="true">
+                            <p:outputPanel id="manage-product-content" class="ui-fluid">
+                                <p:outputPanel rendered="#{not empty itemController.selectedItem}">
+
+                                     <p:panelGrid columns="4"
+                                                 columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+                                                 layout="grid"
+                                                 styleClass="ui-panelgrid-blank ui-fluid"
+                                                 style="border:0px none; background-color:transparent;">
+
+
+
+                                        <p:outputLabel for="@next" value="Item Code"/>
+                                        <p:inputText id="code" value="#{itemController.selectedItem.itemCode}" required="true" />
+
+                                        <p:outputLabel for="@next" value="Item Name"/>
+                                        <p:inputText id="name" value="#{itemController.selectedItem.itemName}" required="true" />
+                                         <p:outputLabel for="@next" value="Description1/Remarks1"/>
+                                         <p:inputTextarea rows="4" value="#{itemController.selectedItem.descriptionOne}"/>
+                                         <p:outputLabel for="@next" value="Description2/Remarks2"/>
+                                         <p:inputTextarea rows="4" value="#{itemController.selectedItem.descriptionTwo}"/>
+                                         <p:outputLabel for="@next" value="Description3/Remarks3"/>
+                                         <p:inputTextarea rows="4" value="#{itemController.selectedItem.descriptionThree}"/>
+                                          <p:outputLabel for="@next" value="Current Inventory Quantity"/>
+                                          <p:inputText id="quantity" value="#{itemController.selectedItem.currentInventoryQuantity}" required="true" />
+
+                                         <p:outputLabel for="@next" value="Quantity Measured In"/>
+                                         <p:inputText id="measuredIn" value="#{itemController.selectedItem.quantityMeasuredIn}" required="true" />
+
+                                        <p:outputLabel for="@next" value="Status"/>
+                                        <p:selectOneRadio id="statusline" value="#{itemController.selectedItem.status}" layout="lineDirection">
+                                            <f:selectItem itemLabel="Active" itemValue="1"/>
+                                            <f:selectItem itemLabel="InActive" itemValue="0"/>
+
+                                        </p:selectOneRadio>
+
+                                            <p:outputLabel for="@next" value="Active From Date"/>
+                                            <p:datePicker id="date1" value="#{itemController.selectedItem.activeFromDate}" />
+                                             <p:outputLabel for="@next" value="Active Till Date"/>
+                                             <p:datePicker id="date2" value="#{itemController.selectedItem.activeTillDate}" />
+                                            
+
+
+
+                                       
+                                    </p:panelGrid>
+
+
+                                </p:outputPanel>
+                            </p:outputPanel>
+
+                            <f:facet name="footer">
+                                <p:commandButton value="Save" icon="pi pi-check" actionListener="#{itemController.saveItem()}"
+                                                 update="manage-product-content" process="manage-product-content @this" />
+                                <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('manageProductDialog').hide()"
+                                                 class="ui-button-secondary" type="button" />
+                            </f:facet>
+                        </p:dialog>
+
+                        <p:confirmDialog widgetVar="deleteProductDialog" showEffect="fade" width="300"
+                                         message="Delete the product?" header="Confirm" severity="warn">
+                            <p:commandButton value="Yes" icon="pi pi-check" actionListener="#{itemController.deleteItem()}"
+                                             process="@this" update=":form:delete-products-button"
+                                             oncomplete="PF('deleteProductDialog').hide()" />
+                            <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                             onclick="PF('deleteProductDialog').hide()" />
+                        </p:confirmDialog>
+
+                        <p:confirmDialog global="true" showEffect="fade" width="300">
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"
+                                             icon="pi pi-times" />
+                        </p:confirmDialog>
+                    </h:form>
+                </div>
+
+
+
+
+
+
+            </ui:define>
+
+
+        </ui:composition>
+    </h:body>
+</html>
